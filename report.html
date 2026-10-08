@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lead report – NorthPeak Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080C20;--card:#101733;--line:rgba(255,255,255,.1);--ink:#F3F5FF;--mut:#9AA3C7;--k:#FF8A6B;--d:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;--b:"Inter Tight",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box;margin:0}
+body{background:radial-gradient(900px 500px at 90% -10%,#1A2260,transparent 60%),var(--bg);color:var(--ink);font:400 16px/1.55 var(--b);padding:28px 16px 60px;min-height:100vh}
+.w{max-width:760px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;color:var(--mut);font-size:14px}
+.top b{font:800 20px var(--d);color:var(--ink);letter-spacing:-.03em}
+.hd{background:var(--k);color:#10131f;border-radius:20px 20px 0 0;padding:24px 26px}
+.hd small{opacity:.75;font-weight:600;font-size:13px}
+.hd h1{font:800 clamp(30px,6vw,46px)/1.05 var(--d);letter-spacing:-.03em;margin:4px 0 8px}
+.hd p{font-weight:500}
+.bd{background:var(--card);border:1px solid var(--line);border-top:0;border-radius:0 0 20px 20px;padding:24px 26px}
+h2{font:700 18px var(--d);margin:26px 0 10px;letter-spacing:-.01em}
+.nr{font-size:17px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 4px}
+.btns a{flex:1 1 200px;text-align:center;padding:14px;border-radius:12px;font-weight:600;text-decoration:none;border:1px solid var(--line);color:var(--ink);background:rgba(255,255,255,.06)}
+.btns a.p{background:var(--k);color:#10131f;border-color:var(--k)}
+.box{border-left:4px solid var(--k);background:rgba(255,255,255,.05);padding:14px 16px;border-radius:0 12px 12px 0;margin-top:6px}
+.box p{margin:3px 0}.box ol{padding-left:20px;margin:6px 0}
+.warn{border-color:#FFC56B}
+.row{display:grid;grid-template-columns:1fr 70px 120px;gap:12px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.row i{height:7px;border-radius:7px;background:rgba(255,255,255,.1);position:relative;overflow:hidden}
+.row i::after{content:"";position:absolute;inset:0;width:var(--w);background:var(--k);border-radius:7px}
+.row b{text-align:right}.neg b{color:#FF6B6B}
+dl{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;font-size:15px}
+dt{color:var(--mut)}dd{margin:0;word-break:break-word}
+a{color:#8EA2FF}
+.note{color:var(--mut);font-size:13px;margin-top:8px}
+.err{text-align:center;padding:60px 20px;color:var(--mut)}
+.foot{margin-top:28px;text-align:center;color:var(--mut);font-size:12.5px}
+@media(max-width:560px){.row{grid-template-columns:1fr 60px}.row i{display:none}dl{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="w" id="app"><div class="err">Loading report…</div></div>
+<script>
+function h(tag,attrs,kids){var e=document.createElement(tag);for(var k in (attrs||{})){if(k==='t')e.textContent=attrs[k];else e.setAttribute(k,attrs[k])}(kids||[]).forEach(function(c){if(c)e.appendChild(c)});return e}
+function fail(m){var a=document.getElementById('app');a.innerHTML='';a.appendChild(h('div',{class:'err',t:m}))}
+async function decode(hash){
+  var s=hash.replace(/^#/,'');
+  if(s.indexOf('z.')!==0)throw new Error('format');
+  var b=s.slice(2).replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';
+  var bin=atob(b),bytes=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  var out=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return JSON.parse(await new Response(out).text());
+}
+function safeUrl(u){return /^https?:\/\//i.test(u||'')?u:''}
+function render(p){
+  var a=p.a||{},app=document.getElementById('app');app.innerHTML='';
+  document.documentElement.style.setProperty('--k',p.c.k||'#FF8A6B');
+  document.title='Lead report: '+(a.name||'new lead');
+  app.appendChild(h('div',{class:'top'},[h('b',{t:p.co||'NorthPeak Digital'}),h('span',{t:'Lead report'})]));
+  var card=h('div',{});
+  card.appendChild(h('div',{class:'hd'},[h('small',{t:'LEAD BRIEF'}),h('h1',{t:(p.c.e||'')+' '+p.c.n+'  |  '+p.t+'/100'}),h('p',{t:p.r.n+' · '+p.rs})]));
+  var bd=h('div',{class:'bd'});
+  bd.appendChild(h('p',{class:'nr',t:p.nr}));
+  var bt=h('div',{class:'btns'});
+  if(safeUrl(p.s)){var x=h('a',{class:'p',href:p.s,target:'_blank',rel:'noopener',t:'📅 Schedule a call'});bt.appendChild(x)}
+  if(safeUrl(p.w)){bt.appendChild(h('a',{href:p.w,target:'_blank',rel:'noopener',t:'🌐 Visit our website'}))}
+  if(bt.children.length)bd.appendChild(bt);
+
+  bd.appendChild(h('h2',{t:'Recommended routing and next action'}));
+  var bx=h('div',{class:'box'});
+  bx.appendChild(h('p',{t:'Route: '+p.r.n+(p.r.o?' ('+p.r.o+')':'')}));
+  bx.appendChild(h('p',{t:'Response time: '+p.rs}));
+  if(p.r.w)bx.appendChild(h('p',{t:'Why this route: '+p.r.w}));
+  if(p.r.m)bx.appendChild(h('p',{t:p.r.m}));
+  var ol=h('ol',{});(p.ns||[]).forEach(function(n){ol.appendChild(h('li',{t:n}))});
+  bx.appendChild(h('p',{t:'Next steps'}));bx.appendChild(ol);
+  if(p.c.x)bx.appendChild(h('p',{class:'note',t:p.c.x}));
+  bd.appendChild(bx);
+
+  if((p.f||[]).length){bd.appendChild(h('h2',{t:'Watch-outs'}));
+    var wl=h('ul',{class:'box warn'});wl.style.paddingLeft='34px';p.f.forEach(function(f){wl.appendChild(h('li',{t:f}))});bd.appendChild(wl)}
+
+  bd.appendChild(h('h2',{t:'Score breakdown: '+p.t+'/100'}));
+  (p.b||[]).forEach(function(r){
+    var pen=r[3]==='Penalty',neg=r[1]<0,pct=(!pen&&r[2]>0)?Math.round(100*Math.max(0,r[1])/r[2]):0;
+    var row=h('div',{class:'row'+(neg?' neg':'')},[h('span',{t:r[0]}),h('b',{t:(r[1]>0?'+':'')+r[1]+(pen?'':' / '+r[2])}),pen?h('span',{}):(function(){var i=h('i',{});i.style.setProperty('--w',pct+'%');return i})()]);
+    bd.appendChild(row)});
+  if((p.mi||[]).length)bd.appendChild(h('p',{class:'note',t:'No points earned for: '+p.mi.join(', ')+'.'}));
+  if(p.rt!==undefined&&p.rt!==p.t)bd.appendChild(h('p',{class:'note',t:'Raw total '+p.rt+' was capped to the 0 to 100 range.'}));
+
+  var need=[['Service',a.service],['Project size',a.complexity],['Problem in their words',a.problem],['Additional requirements',a.extra],['Today they use',a.current]].filter(function(r){return r[1]});
+  if(need.length){bd.appendChild(h('h2',{t:'What they need'}));var d=h('dl',{});need.forEach(function(r){d.appendChild(h('dt',{t:r[0]}));d.appendChild(h('dd',{t:r[1]}))});bd.appendChild(d)}
+
+  var snap=[['Company',a.company],['Industry',a.industry],['Company size',a.size],['Budget',a.budget?a.budget+(a.approval?' ('+a.approval.toLowerCase()+')':''):''],['Timeline',a.timeline],['Decision role',a.authority],['Agency history',a.experience],['Found us via',a.source]].filter(function(r){return r[1]});
+  if(snap.length){bd.appendChild(h('h2',{t:'Lead snapshot'}));var d2=h('dl',{});snap.forEach(function(r){d2.appendChild(h('dt',{t:r[0]}));d2.appendChild(h('dd',{t:r[1]}))});bd.appendChild(d2)}
+
+  if(a.name||a.email||a.phone){bd.appendChild(h('h2',{t:'Contact'}));var d3=h('dl',{});
+    if(a.name){d3.appendChild(h('dt',{t:'Name'}));d3.appendChild(h('dd',{t:a.name}))}
+    if(a.email){d3.appendChild(h('dt',{t:'Email'}));var dd=h('dd',{});dd.appendChild(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(a.email)?h('a',{href:'mailto:'+a.email,t:a.email}):h('span',{t:a.email+' (check address)'}));d3.appendChild(dd)}
+    if(a.phone){d3.appendChild(h('dt',{t:'Phone'}));var dp=h('dd',{});dp.appendChild(h('a',{href:'tel:'+a.phone.replace(/[^\d+]/g,''),t:a.phone}));d3.appendChild(dp)}
+    bd.appendChild(d3)}
+
+  card.appendChild(bd);app.appendChild(card);
+  app.appendChild(h('p',{class:'foot',t:'Scored automatically by the '+(p.co||'NorthPeak Digital')+' Lead Engine using the rules in the Qualification Rules, Classification and Routing Rules tabs.'}));
+}
+(async function(){
+  if(!location.hash||location.hash.length<10)return fail('Open this page from the See the full report button in a lead email.');
+  if(typeof DecompressionStream==='undefined')return fail('Please open this report in an up-to-date version of Chrome, Edge, Safari or Firefox.');
+  try{render(await decode(location.hash))}catch(e){fail('This report link looks incomplete. Please open it again from the email.')}
+})();
+</script>
+</body>
+</html>
